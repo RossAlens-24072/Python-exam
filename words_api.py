@@ -14,9 +14,3 @@ class Api:
 
     def print_word(self):
         print(self.words)
-
-#api testēšana - vēlāk jāizņem
-
-# vards = Api()
-# print(vards.populate_words())
-# vards.print_word()
