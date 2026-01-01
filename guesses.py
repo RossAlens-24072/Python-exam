@@ -27,24 +27,3 @@ class Guesses:
 
     def is_over(self):
         return len(self.attempts) >= self.max_tries
-
-
-# Šis vairāk hangman atbilst, jo wordle vajag mēģinājumiem secību arī, 
-# ja vēlreiz tiek ievadīts tāds pats vārds.
-"""
-class Guesses:
-    def __init__(self):
-        self.guesses_made = set()
-    
-    def guessed(self, letter):
-       return letter in self.guesses_made
-    
-    def record(self, guess, word):
-        self.guesses_made.add(guess)
-        return guess in word
-    
-    def made(self):
-        guesses_list = list(self.guesses_made)
-        guesses_list.sort()
-        return ";".join(guesses_list)
-"""
