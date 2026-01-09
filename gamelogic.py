@@ -2,13 +2,21 @@ from words_api import Api
 from guesses import Guesses
 
 class Wordle:
-    def __init__(self, difficulty ='standard'):
+    def __init__(self, reveal=1):
         # Veidojam klašu objektus inicializatorā
         self.answer = Api().populate_words().lower()
         self.guesses = Guesses()
         self.game_won = False
-        self.difficulty = difficulty.lower()
-
+        self.reveal = int(reveal)
+        
+        #lai evaluate_guess strādātu
+        if self.reveal == 0:
+            self.difficulty = "hard"
+        elif self.reveal == 1:
+            self.difficulty = "standard"
+        else:
+            self.difficulty = "easy"
+       
         print(f"\nGrūtības pakāpe: {self.difficulty.upper()}")
 
     def evaluate_guess(self, guess):
@@ -16,7 +24,7 @@ class Wordle:
         if self.difficulty == 'hard':
             return ['_' for _ in range(len(guess))]
         
-        result = []
+        result = [] #glabā vienas rindas krāsas un stāvokļus
         # Glabājam sarakstā pareizā vārda burtus
         answer_letters = list(self.answer)
 
@@ -36,7 +44,7 @@ class Wordle:
             letter = guess[char]
             if letter in answer_letters:
                 result[char] = 'Yellow'
-                idx = answer_letters.index(letter)
+                idx = answer_letters.index(letter) 
                 answer_letters[idx] = None
             else:
                 # Burts vispār nav pareizajā vārdā
@@ -45,10 +53,10 @@ class Wordle:
     
     def get_hint(self):
         """Padara pirmo burtu redzamu priekš vieglā režīma"""
-        if self.difficulty == 'easy' and not self.guesses.attempts:
-            return self.answer[0]
+        if self.reveal > 0 and not self.guesses.attempts:
+            return self.answer[:self.reveal]
         return None
-    
+  
     def display_hint(self):
         """Pārāda minamā vārda pirmo burtu"""
         if self.difficulty == 'easy':
@@ -69,6 +77,7 @@ class Wordle:
             else:
                 print(f"Gray - {guess[char].upper()}")
         print("\n")
+    
 
     # def get_diff_info(self):
     #     """Parāda informāciju par grūtības pakāpi"""
@@ -77,7 +86,7 @@ class Wordle:
     #             'hard': "Netiks dots nekāds info par ievadītā vārda saistību ar atbildi"}
     #     return info.get(self.difficulty, "")
 
-
+    
     def enter_word(self):
         """Vārda ievades funkcija spēlei"""
         while True:
@@ -101,7 +110,7 @@ class Wordle:
             except ValueError as e:
                 print(e)
                 continue
-
+    
     def display_progress(self):
         """Parāda visus minētos vārdus un to burtu statusu"""
         print("Minējumi: ")
@@ -115,6 +124,7 @@ class Wordle:
                 self.display_guess_result(guess, result)
 
         print(f"Atlikušie minējumi: {self.guesses.tries_left()}")
+    
 
     def update_letter_status(self, guess, result):
         """Funkcija, kas atjaunina burtu statusu"""
@@ -182,7 +192,9 @@ class Wordle:
             for i, guess in enumerate(self.guesses.attempts):
                 print(f"{i+1}. {guess.upper()}")
 
-# Testēšana, lai mainītu diff iedod to objektam!
-obj = Wordle('easy')
-print(f"DEBUG - pareizais spēles atminējums: {obj.answer}")
-obj.play()
+    
+if __name__=="__main__":
+    # Testēšana, lai mainītu diff iedod to objektam!
+    obj = Wordle('easy')
+    print(f"DEBUG - pareizais spēles atminējums: {obj.answer}")
+    obj.play()

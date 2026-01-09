@@ -2,27 +2,29 @@ from time import sleep
 import pygame
 import pygame_menu
 from pygame_menu import themes
+from game import run_game
  
 pygame.init()
 surface = pygame.display.set_mode((600, 400))
 
 selector_sound = pygame.mixer.Sound('sounds/cursor.wav')
 
-REVEAL = 0 #glabās izvēlēto pakāpi: cik daud zburtus atklāt.
-def set_difficulty(value, difficulty):
-    global REVEAL
-    REVEAL = value
-
 def start_the_game():
     selector_sound.play()
+
+    progress = loading.get_widget("1") 
+    progress.set_value(0) #reseto, lai atgriežoties atpakaļ un spiežot play no jauna, nepaliek loading sceen uz 100%
+
     mainmenu._open(loading)
     pygame.time.set_timer(update_loading, 30)
 
 
-def set_difficulty(value, difficulty):
-    """Funkcija, kas ļauj lietotājam izvēlēties spēles grūtības pakāpi"""
-    global REVEAL # galbās izvēlēto grūtības pakāpi
-    REVEAL = difficulty
+REVEAL = 0 #glabās izvēlēto pakāpi: cik daudz burtus atklāt.
+
+def set_difficulty(*args, **kwargs):
+    global REVEAL
+    selected_item, index = difficulty_selector.get_value()
+    REVEAL = selected_item[1]  #paņem otro no touple
     selector_sound.play()
 
 
@@ -31,10 +33,10 @@ mainmenu.add.text_input('Name: ', default='username')
 
 difficulty_selector = mainmenu.add.selector(
     'Difficulty :',
-    [('Hard (no hint)', 1), ('Moderate(first letter)', 2), ('Easy(first 2 letters)', 3) ],
+    [('Hard (no hint)', 0), ('Moderate(first letter)', 1), ('Easy(first 2 letters)', 2) ],
 onchange=set_difficulty)
 
-difficulty_selector._select= True
+difficulty_selector._select= True 
     
 mainmenu.add.button('Play', start_the_game)
 mainmenu.add.button('Quit', pygame_menu.events.EXIT)
@@ -54,19 +56,27 @@ while True:
     for event in events:
         if event.type == update_loading:
             progress = loading.get_widget("1")
-            progress.set_value(progress.get_value() + 1)
+            progress.set_value(min(100, progress.get_value() + 1))
             if progress.get_value() == 100:
                 pygame.time.set_timer(update_loading, 0)
+
+                #Jo ielādēja tikai līdz 99 un palaida režģi
+                loading.draw(surface)
+                pygame.display.update()
+
+                # Palaiž režģi (spēles ekrānu)
+                result = run_game(surface, REVEAL)
+                if result == "quit":
+                    pygame.quit()
+                    raise SystemExit
+
+                # Ar ESC, atgriezties uz menu.. nestrādā
+                loading._open(mainmenu)
+                progress.set_value(0)
+
         if event.type == pygame.QUIT:
             exit()
     current_widget = mainmenu.get_current().get_selected_widget() if mainmenu.get_current() else None
-    
-    # Atskaņo skaņu, kad maina grūtības pakāpi
-    if current_widget == difficulty_selector:
-        current_index = difficulty_selector.get_index()
-        if current_index != last_selected_index:
-            selector_sound.play()
-            last_selected_index = current_index
     
     # Atskaņo skaņas efektus katru reizi, kad kaut ko izvēlās
     if current_widget and current_widget != last_selected_widget:
