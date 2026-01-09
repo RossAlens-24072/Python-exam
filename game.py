@@ -10,6 +10,7 @@ def run_game(surface, reveal):
     grid = []
     row = 0
     wordle = Wordle(reveal=reveal)
+    print(f"Debug - atbilde:{wordle.answer}")
 
     current_input = ""
     #kamēr spēles cikls izpildās, tikmēr tiek zīmēts režģis
@@ -27,8 +28,20 @@ def run_game(surface, reveal):
             grid_row.append(Letter("", (x, y)))
         grid.append(grid_row)
 
+    if wordle.difficulty == "easy":
+        hint = wordle.get_hint()
+        if hint:
+            for i, j in enumerate(hint):
+                grid[0][i].text = j.upper()
+                grid[0][i].text_color = "black"
+                grid[0][i].draw_letter()
+                current_input += j
+                
+
     while running:
-        surface.fill("white")
+        for r in range(6):
+            for c in range(5):
+                grid[r][c].draw_letter()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -44,7 +57,7 @@ def run_game(surface, reveal):
                     continue
 
                 #Rakstīšana
-                if event.unicode.isalpha() and len(current_input) < 5:
+                if event.unicode and event.unicode.isalpha() and len(current_input) < 5:
                     col = len(current_input)
                     letter = event.unicode.upper()
                     grid[row][col].text = letter
@@ -60,20 +73,20 @@ def run_game(surface, reveal):
 
 
                 # Minējuma iesniegšana ar "enter"
-                if event.key == pygame.K_RETURN:
-                    if len(current_input) == 5:
-                        result = wordle.evaluate_guess(current_input)
+                if event.key == pygame.K_RETURN and len(current_input) ==5:
+                    wordle.guesses.add_attempt(current_input)
+                    result = wordle.evaluate_guess(current_input)
                         
-                        for i in range(5):
-                            box = grid[row][i]
+                    for i in range(5):
+                        box = grid[row][i]
                         if result[i] == "Green":
-                            box.bg_color = "#6aaa64"
+                           box.bg_color = "#6aaa64"
                         elif result[i] == "Yellow":
                             box.bg_color = "#c9b458"
                         else:
-                            box.bg_color = "#787c73"
+                            box.bg_color = "#787c7e"
 
-                        box.text_color = "white"
+                        box.text_color = "black"
                         box.draw_letter()
 
                     if current_input == wordle.answer:

@@ -33,7 +33,7 @@ mainmenu.add.text_input('Name: ', default='username')
 
 difficulty_selector = mainmenu.add.selector(
     'Difficulty :',
-    [('Hard (no hint)', 0), ('Moderate(first letter)', 1), ('Easy(first 2 letters)', 2) ],
+    [('Hard (no hints and colors)', 0), ('Standard', 1), ('Easy(first letter is shown)', 2) ],
 onchange=set_difficulty)
 
 difficulty_selector._select= True 
@@ -89,5 +89,4 @@ while True:
         mainmenu.draw(surface)
         if (mainmenu.get_current().get_selected_widget()):
             arrow.draw(surface, mainmenu.get_current().get_selected_widget())
- 
     pygame.display.update()

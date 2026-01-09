@@ -3,6 +3,8 @@ import pygame
 
 # Konstantes
 screen = pygame.display.set_mode((633, 900))
+pygame.init()
+pygame.font.init()
 font = pygame.font.Font("fonts/FreeSansBold.otf")
 
 class Letter:
