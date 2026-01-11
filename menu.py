@@ -5,7 +5,7 @@ from pygame_menu import themes
 from game import run_game
  
 pygame.init()
-surface = pygame.display.set_mode((600, 400))
+surface = pygame.display.set_mode((700, 700))
 
 selector_sound = pygame.mixer.Sound('sounds/cursor.wav')
 
@@ -28,8 +28,8 @@ def set_difficulty(*args, **kwargs):
     selector_sound.play()
 
 
-mainmenu = pygame_menu.Menu('WORDLE game', 600, 400, theme=themes.THEME_SOLARIZED)
-mainmenu.add.text_input('Name: ', default='username')
+mainmenu = pygame_menu.Menu('WORDLE game', 700, 700, theme=themes.THEME_SOLARIZED)
+# mainmenu.add.text_input('Name: ', default='username')
 
 difficulty_selector = mainmenu.add.selector(
     'Difficulty :',
@@ -41,7 +41,7 @@ difficulty_selector._select= True
 mainmenu.add.button('Play', start_the_game)
 mainmenu.add.button('Quit', pygame_menu.events.EXIT)
 
-loading = pygame_menu.Menu('Loading the Game...', 600, 400, theme=themes.THEME_DARK)
+loading = pygame_menu.Menu('Loading the Game...', 700, 700, theme=themes.THEME_DARK)
 loading.add.progress_bar("Progress", progressbar_id = "1", default=0, width = 200, )
  
 arrow = pygame_menu.widgets.LeftArrowSelection(arrow_size = (10, 15))

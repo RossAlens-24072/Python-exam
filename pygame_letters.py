@@ -1,36 +1,52 @@
-from gamelogic import Wordle
 import pygame
 
-# Konstantes
-screen = pygame.display.set_mode((633, 900))
-pygame.init()
 pygame.font.init()
-font = pygame.font.Font("fonts/FreeSansBold.otf")
+font = pygame.font.Font("fonts/FreeSansBold.otf", 42)
 
 class Letter:
     def __init__(self, text, bg_position):
         self.bg_color = "white"
         self.text_color = "black"
-        self.bg_position = bg_position
         self.bg_x = bg_position[0]
         self.bg_y = bg_position[1]
-        self.bg_rect = (bg_position[0], self.bg_y, 75, 75)
-        self.text = text
-        self.text_position = (self.bg_x+36, self.bg_position[1]+34)
-        self.text_surface = font.render(self.text, True, self.text_color)
-        self.text_rect = self.text_surface.get_rect(center=self.text_position)
 
-    def draw_letter(self):
-        """Funkcija, kas ievieto burtus uz ekrāna attiecīgajās vietās"""            
-        pygame.draw.rect(screen, self.bg_color, self.bg_rect)
-        if self.bg_color == "white":
-            pygame.draw.rect(screen, "#878a8c", self.bg_rect, 3) #uztaisam taisnstūri
-        self.text_surface = font.render(self.text, True, self.text_color)
-        screen.blit(self.text_surface, self.text_rect)
-        pygame.display.update()
+        # Rect ir ērtāk nekā tuple, jo var viegli centrēt tekstu
+        self.bg_rect = pygame.Rect(self.bg_x, self.bg_y, 75, 75)
+        self.text = text
+        self.text_surface = None
+        self.text_rect = None
+        self._refresh_text()  # sagatavo renderi sākumā
+
+    def _refresh_text(self):
+        """Pārrenderē tekstu (sauc tikai tad, kad mainās text/color )."""
+        if self.text:
+            self.text_surface = font.render(self.text, True, pygame.Color(self.text_color))
+            self.text_rect = self.text_surface.get_rect(center=self.bg_rect.center)
+        else:
+            self.text_surface = None
+            self.text_rect = None
+
+    def set_text (self, new_text):
+        """Maina burtu un pārrenderē tikai tad, ja tiešām izmainījās."""
+        new_text = new_text or ""
+        if new_text != self.text:
+            self.text = new_text
+            self._refresh_text()
+
+    def set_text_color(self, new_color):
+        """Ja maina text_color, vajag pārrenderēt."""
+        if new_color != self.text_color:
+            self.text_color = new_color
+            self._refresh_text()
+
+    def draw_letter(self, surface):
+            """Zīmē lauciņu uz padotā surface. NEKĀDA update/flip šeit."""
+            pygame.draw.rect(surface, pygame.Color(self.bg_color), self.bg_rect)
+            pygame.draw.rect(surface, pygame.Color("#878a8c"), self.bg_rect, 3)
+
+            if self.text_surface:
+                surface.blit(self.text_surface, self.text_rect)
 
     def delete(self):
         """Burtu kvadrātu atbrīvo no vērtības"""
-        pygame.draw.rect(screen, "white", self.bg_rext)
-        pygame.draw.rect(screen, "#d3d6da", self.bg_rect, 3)
-        pygame.display.update()
+        self.set_text("")
