@@ -3,7 +3,8 @@ from gamelogic import Wordle
 from pygame_letters import Letter
 
 def run_game(surface, reveal):
-    game_lost_sound = pygame.mixer.Sound('sounds/gamelost.wav')
+    wrong_sound = pygame.mixer.Sound('sounds/wrong.wav')
+    game_lost_sound = pygame.mixer.Sound('sounds/gamelost.mp3')
     victory_sound = pygame.mixer.Sound('sounds/victory.mp3')
     grid = []
     row = 0
@@ -54,6 +55,7 @@ def run_game(surface, reveal):
     def restart_round():
         """Funkcija raunda restartēšanai, jauna vārda ģenerēšanai"""
         nonlocal wordle, row, current_input, game_over, message
+        pygame.mixer.stop()
         wordle = Wordle(reveal=reveal)
         print(f"Debug - atbilde:{wordle.answer}")
 
@@ -127,6 +129,7 @@ def run_game(surface, reveal):
                         message = f"Correct! Attempts: {tries}. Press ENTER to continue."
                         game_over = True
                     else:
+                        wrong_sound.play()
                         row += 1
                         current_input = ""
                         if row >=6:
