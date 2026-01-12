@@ -10,7 +10,6 @@ class Letter:
         self.bg_x = bg_position[0]
         self.bg_y = bg_position[1]
 
-        # Rect ir ērtāk nekā tuple, jo var viegli centrēt tekstu
         self.bg_rect = pygame.Rect(self.bg_x, self.bg_y, 75, 75)
         self.text = text
         self.text_surface = None
@@ -40,12 +39,12 @@ class Letter:
             self._refresh_text()
 
     def draw_letter(self, surface):
-            """Zīmē lauciņu uz padotā surface. NEKĀDA update/flip šeit."""
-            pygame.draw.rect(surface, pygame.Color(self.bg_color), self.bg_rect)
-            pygame.draw.rect(surface, pygame.Color("#878a8c"), self.bg_rect, 3)
+        """Zīmē lauciņu uz padotā surface."""
+        pygame.draw.rect(surface, pygame.Color(self.bg_color), self.bg_rect)
+        pygame.draw.rect(surface, pygame.Color("#878a8c"), self.bg_rect, 3)
 
-            if self.text_surface:
-                surface.blit(self.text_surface, self.text_rect)
+        if self.text_surface:
+            surface.blit(self.text_surface, self.text_rect)
 
     def delete(self):
         """Burtu kvadrātu atbrīvo no vērtības"""

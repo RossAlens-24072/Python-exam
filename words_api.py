@@ -1,6 +1,4 @@
 import requests
-import json
-
 # Vārdu dabūšana spēlei ar API
 class Api:
     def __init__(self):
