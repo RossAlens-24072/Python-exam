@@ -22,7 +22,10 @@ class Wordle:
     def evaluate_guess(self, guess):
         """Funkcija, kas glabās minētā vārda burtu statusu attiecībā pret pareizo atbildi"""
         if self.difficulty == 'hard':
-            return ['_' for _ in range(len(guess))]
+            if guess == self.answer:
+                return ['Green' for _ in range(len(guess))]
+            else:
+                return ['_' for _ in range(len(guess))]
         
         result = [] #glabā vienas rindas krāsas un stāvokļus
         # Glabājam sarakstā pareizā vārda burtus
@@ -77,16 +80,7 @@ class Wordle:
             else:
                 print(f"Gray - {guess[char].upper()}")
         print("\n")
-    
 
-    # def get_diff_info(self):
-    #     """Parāda informāciju par grūtības pakāpi"""
-    #     info = {'easy': "Tiks dots pirmais vārds",
-    #             'standard': "Legacy spēles noteikumi",
-    #             'hard': "Netiks dots nekāds info par ievadītā vārda saistību ar atbildi"}
-    #     return info.get(self.difficulty, "")
-
-    
     def enter_word(self):
         """Vārda ievades funkcija spēlei"""
         while True:
@@ -191,10 +185,3 @@ class Wordle:
             print("Jūsu minējumi: ")
             for i, guess in enumerate(self.guesses.attempts):
                 print(f"{i+1}. {guess.upper()}")
-
-    
-if __name__=="__main__":
-    # Testēšana, lai mainītu diff iedod to objektam!
-    obj = Wordle('easy')
-    print(f"DEBUG - pareizais spēles atminējums: {obj.answer}")
-    obj.play()
