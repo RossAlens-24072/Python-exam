@@ -1,29 +1,31 @@
 class Guesses:
+    """Klase glabā spēlētāja minējumus un maksimālo mēģinājumu limitu"""
     def __init__(self, max_tries=6, word_len=5):
+        """ Funkcija inicializē klasi Guesses"""
         self.max_tries = max_tries
         self.word_len = word_len
-        self.attempts = []          # saraksts, kurā glabāsies secīgi minējumi (vārdi)
-        self.letter_status = {}     # pēc izvēles: burts -> "G/Y/_"
+        self.attempts = []        
+        self.letter_status = {} 
 
-    def add_attempt(self, guess: str, required_prefix: str = ""): #requred_prefix nepieciešams, ja jānosaka, cik burti jau doti.
+    def add_attempt(self, guess: str, required_prefix: str = ""):
+        """ Funkcija pievieno jaunu minējumu"""
         guess = guess.strip().lower()
 
+        # Ja atļautie mēģinājumi ir beigušies, jaunu minējumu nevar pievienot
         if self.is_over():
             raise ValueError("No attempts left")
 
         # kļūda, ja minējums īsaks par 5 burtiem un sastāv no ne burtu simboliem.
         if len(guess) != self.word_len or not guess.isalpha():
             raise ValueError(f"Word consists of {self.word_len} letters")
-
-        # Šo var nelikt. Kļūda, ja vārds nesākas ar atklātajiem sākuma burtiem
-        if required_prefix and not guess.startswith(required_prefix):
-            raise ValueError(f"Guess must start with: {required_prefix}")
         
         # Pievieno minējumu sarakstam.
         self.attempts.append(guess)
 
     def tries_left(self):
+        """Funkcija atgriež atlikušo mēģinājumu skaitu"""
         return self.max_tries - len(self.attempts)
 
     def is_over(self):
+        """Funkcija nosaka, vai ir sasniegt maksimālais mēģinājumu skaits"""
         return len(self.attempts) >= self.max_tries

@@ -5,7 +5,7 @@ class Words:
     def __init__(self):
         self.api = words_api.Api()
         self.word = self.api.populate_words()
-        self.letters_in_word = list(self.word) # sadalam vārdu pa burtiem
+        self.letters_in_word = list(self.word) # sadala vārdu pa burtiem
     
     def guessed(self, guesses_obj):
         # letters_guessed = self.letters_in_word.intersection(guesses_obj.guesses.made)

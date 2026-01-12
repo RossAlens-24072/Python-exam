@@ -3,13 +3,17 @@ from guesses import Guesses
 
 class Wordle:
     def __init__(self, reveal=1):
-        # Veidojam klašu objektus inicializatorā
+        """
+        Iniciaizē wordle spēles loģiku.
+        Parametrs - reveal - nosaka, cik sākuma burtus atklāt (0: hard, 1: standard, 2+: easy).
+        """
+        # Veidojo klašu objektus inicializatorā
         self.answer = Api().populate_words().lower()
         self.guesses = Guesses()
         self.game_won = False
         self.reveal = int(reveal)
         
-        #lai evaluate_guess strādātu
+        # Nosaka grūtības režīmu pēc "reveal" vērtības
         if self.reveal == 0:
             self.difficulty = "hard"
         elif self.reveal == 1:
@@ -20,7 +24,9 @@ class Wordle:
         print(f"\nGrūtības pakāpe: {self.difficulty.upper()}")
 
     def evaluate_guess(self, guess):
-        """Funkcija, kas glabās minētā vārda burtu statusu attiecībā pret pareizo atbildi"""
+        """Funkcija, kas nosaka un glabā minētā vārda burtu statusu salīdzinot ar pareizo atbildi"""
+        
+        # "Hard" režīms atgeiež tikai pareizi ievadīta vārda krāsu
         if self.difficulty == 'hard':
             if guess == self.answer:
                 return ['Green' for _ in range(len(guess))]
@@ -28,10 +34,11 @@ class Wordle:
                 return ['_' for _ in range(len(guess))]
         
         result = [] #glabā vienas rindas krāsas un stāvokļus
-        # Glabājam sarakstā pareizā vārda burtus
+
+        # Glabā sarakstā pareizā vārda burtus
         answer_letters = list(self.answer)
 
-        # pārbaudam vai kāds burts ir pareizs un atrodas pareizajā vietā
+        # Pārbauda vai kāds burts ir pareizs un atrodas pareizajā vietā
         for char in range(len(guess)):
             if guess[char] == self.answer[char]:
                 result.append('Green')
@@ -39,7 +46,7 @@ class Wordle:
             else:
                 result.append('_') # Ja burts nav derīgs, tad ir '_'
 
-        # pārbaudam vai ir kāds pareizs burts, bet nepareizajā vietā.
+        # Pārbauda vai ir kāds pareizs burts, bet nepareizajā vietā.
         for char in range(len(guess)):
             if result[char] == 'Green':
                 continue # Burts jau ir pareizajā vietā
@@ -47,8 +54,8 @@ class Wordle:
             letter = guess[char]
             if letter in answer_letters:
                 result[char] = 'Yellow'
-                idx = answer_letters.index(letter) 
-                answer_letters[idx] = None
+                idx = answer_letters.index(letter) # atrod pirmo atbilstošo burtu
+                answer_letters[idx] = None # atzīmē kā izlietotu
             else:
                 # Burts vispār nav pareizajā vārdā
                 result[char] = '_'
@@ -61,13 +68,13 @@ class Wordle:
         return None
   
     def display_hint(self):
-        """Pārāda minamā vārda pirmo burtu"""
+        """Pārāda minamā vārda pirmo burtu (termināļa režīmam)"""
         if self.difficulty == 'easy':
             hint = self.get_hint()
             print(f"Vārds sākas ar burtu '{hint.upper()}'")
 
     def display_guess_result(self, guess, result):
-        """Minēto vārdu saraksts"""
+        """Minēto vārdu saraksts (termināļa režīmam)"""
         if self.difficulty == 'hard':
             print("Informācija par minējumu netiks rādīta!!!")
             return
@@ -82,7 +89,7 @@ class Wordle:
         print("\n")
 
     def enter_word(self):
-        """Vārda ievades funkcija spēlei"""
+        """Vārda ievades funkcija spēlei (termināļa režīmam)"""
         while True:
             word = input("Veic vārda minējumu: ").strip().lower()
             if len(word) == 0:
@@ -106,7 +113,7 @@ class Wordle:
                 continue
     
     def display_progress(self):
-        """Parāda visus minētos vārdus un to burtu statusu"""
+        """Parāda visus minētos vārdus un to burtu statusu (termināļa režīmam)"""
         print("Minējumi: ")
 
         if not self.guesses.attempts:
@@ -134,7 +141,7 @@ class Wordle:
                 self.guesses.letter_status[letter] = 'Yellow'
     
     def display_letter_status(self):
-        """Parāda kādi burti jau ir minēti un kāds viņu statuss"""
+        """Parāda kādi burti jau ir minēti un kāds ir viņu statuss (termināļa režīmam)"""
         if self.difficulty == 'hard':
             return
         
@@ -149,7 +156,7 @@ class Wordle:
                     print(f"{letter.upper()}: Gray (nav vārdā)")
 
     def play(self):
-        """Pašas spēles darbības cikls"""
+        """Pašas spēles darbības cikls (termināļa režīmam)"""
         print("mini vārdu")
         print(f"Tev ir {self.guesses.max_tries} mēģinājumi")
         print(self.difficulty)
@@ -181,7 +188,7 @@ class Wordle:
             print("Vārds netika uzminēts!!!")
             print(f"Pareizā atbilde bija {self.answer}")
 
-            #lietotāja minējumu parādīšana
+            # Lietotāja minējumu parādīšana
             print("Jūsu minējumi: ")
             for i, guess in enumerate(self.guesses.attempts):
                 print(f"{i+1}. {guess.upper()}")

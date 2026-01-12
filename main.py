@@ -20,19 +20,22 @@ def start_the_game():
     global state
     selector_sound.play()
 
+    #Atiestata progresa joslu uz 0, lai uzsākot jaunu spēli, progressa josla sākas no 0 nevis 100%
     progress = loading.get_widget("1") 
-    progress.set_value(0) #reseto, lai atgriežoties atpakaļ un spiežot play no jauna, nepaliek loading sceen uz 100%
+    progress.set_value(0) 
+
     state = STATE_LOADING
-    pygame.time.set_timer(update_loading, 30)
 
+    pygame.time.set_timer(update_loading, 15)
 
-REVEAL = 0 #glabās izvēlēto pakāpi: cik daudz burtus atklāt.
+REVEAL = 0 
 
-def set_difficulty(*args, **kwargs):
+def set_difficulty(value, index):
     """Funkcija, kas ļauj uzstādīt grūtības pakāpi"""
     global REVEAL
-    selected_item, index = difficulty_selector.get_value()
-    REVEAL = selected_item[1]  #paņem otro no touple
+    # get_value() atgriež (selected_item, index), kur selected_item ir (teksts, vērtība)
+    selected_item, index = difficulty_selector.get_value() 
+    REVEAL = selected_item[1]
     selector_sound.play()
 
 
@@ -57,7 +60,8 @@ update_loading = pygame.USEREVENT + 0
 
 last_selected_index = difficulty_selector.get_index()
 last_selected_widget = None
- 
+
+# Cikls, kas apstrādā notikumus un zīmē attiecīgo ekrānu 
 while True:
     events = pygame.event.get()
 
