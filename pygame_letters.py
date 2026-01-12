@@ -10,7 +10,6 @@ class Letter:
         self.bg_x = bg_position[0]
         self.bg_y = bg_position[1]
 
-        # Rect ir ērtāk nekā tuple, jo var viegli centrēt tekstu
         self.bg_rect = pygame.Rect(self.bg_x, self.bg_y, 75, 75)
         self.text = text
         self.text_surface = None
