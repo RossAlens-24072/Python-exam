@@ -87,6 +87,7 @@ def run_game(surface, reveal):
             
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
+                    pygame.mixer.stop()
                     # Atgriezties uz menu
                     return "back"
                 

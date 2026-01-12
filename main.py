@@ -16,6 +16,7 @@ STATE_GAME = "game"
 state = STATE_MENU
 
 def start_the_game():
+    """Funkcija, kas uzsāk lādēšanās procesu spēles palaišanai"""
     global state
     selector_sound.play()
 
@@ -28,6 +29,7 @@ def start_the_game():
 REVEAL = 0 #glabās izvēlēto pakāpi: cik daudz burtus atklāt.
 
 def set_difficulty(*args, **kwargs):
+    """Funkcija, kas ļauj uzstādīt grūtības pakāpi"""
     global REVEAL
     selected_item, index = difficulty_selector.get_value()
     REVEAL = selected_item[1]  #paņem otro no touple
